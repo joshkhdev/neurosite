@@ -34,7 +34,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "../service-nest/dist/client",
+            "outputPath": "../service-nest/dist/src/client",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
