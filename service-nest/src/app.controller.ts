@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
+import { AppInfoDto } from './shared/dto/app-info.dto';
 
 @Controller()
 export class AppController {
@@ -8,11 +9,7 @@ export class AppController {
 
   @Get()
   @ApiOperation({ summary: 'Get app info' })
-  @ApiOkResponse({
-    description: 'App info',
-    type: String,
-  })
-  public getInfo(): string {
+  public getInfo(): AppInfoDto {
     return this.appService.getInfo();
   }
 }

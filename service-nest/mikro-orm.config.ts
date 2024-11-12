@@ -31,6 +31,4 @@ const config = {
   },
 } as Options;
 
-console.log(config);
-
 export default defineConfig(config);

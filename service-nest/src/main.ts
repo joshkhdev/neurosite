@@ -6,6 +6,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MikroORM } from '@mikro-orm/core';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -16,6 +17,7 @@ async function bootstrap() {
   await app.get(MikroORM).getMigrator().up();
 
   app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe());
   app.enableCors({ credentials: true, origin: true });
 
   const config = new DocumentBuilder()
