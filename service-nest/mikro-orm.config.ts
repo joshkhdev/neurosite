@@ -18,7 +18,7 @@ const config = {
   extensions: [Migrator],
   migrations: {
     tableName: '__MikroOrmMigrations',
-    path: 'dist/migrations',
+    path: 'dist/src/migrations',
     pathTs: 'src/migrations',
     glob: '!(*.d).{js,ts}',
     transactional: true,

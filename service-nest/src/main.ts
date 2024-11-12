@@ -5,12 +5,16 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { MikroORM } from '@mikro-orm/core';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
+
+  await app.get(MikroORM).getMigrator().up();
+
   app.setGlobalPrefix('api');
   app.enableCors({ credentials: true, origin: true });
 
