@@ -14,10 +14,8 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { map, Observable } from 'rxjs';
 import { ArticleDto } from './dto/article.dto';
 import {
-  ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
 
@@ -27,10 +25,6 @@ export class ArticlesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all articles' })
-  @ApiOkResponse({
-    description: 'Articles',
-    type: [ArticleDto],
-  })
   public findAll(): Observable<ArticleDto[]> {
     return this.articlesService
       .findAll()
@@ -41,10 +35,6 @@ export class ArticlesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get article by id' })
-  @ApiOkResponse({
-    description: 'Article',
-    type: ArticleDto,
-  })
   @ApiNotFoundResponse({ description: 'Article not found' })
   public findOne(@Param('id') id: string): Observable<ArticleDto> {
     return this.articlesService
@@ -54,7 +44,6 @@ export class ArticlesController {
 
   @Post()
   @ApiOperation({ summary: 'Create new article' })
-  @ApiCreatedResponse({ description: 'Article created', type: ArticleDto })
   public create(
     @Body() createArticleDto: CreateArticleDto,
   ): Observable<ArticleDto> {

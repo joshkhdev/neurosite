@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { AppInfoDto } from './shared/dto/app-info.dto';
 
 @Injectable()
 export class AppService {
-  getInfo(): string {
-    return 'Version: 0.0.1';
+  public getInfo(): AppInfoDto {
+    return {
+      version: '0.0.1',
+    };
   }
 }
