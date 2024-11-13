@@ -6,6 +6,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ArticlesModule } from './articles/articles.module';
+import { AuthModule } from './auth/auth.module';
 import mikroOrmConfig from 'mikro-orm.config';
 
 @Module({
@@ -20,10 +21,7 @@ import mikroOrmConfig from 'mikro-orm.config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        host: config.get('DB_HOST'),
-        port: config.get('DB_PORT'),
-        user: config.get('DB_USER'),
-        password: config.get('DB_PASSWORD'),
+        clientUrl: config.get('SUPABASE_DB_URL'),
         ...mikroOrmConfig,
       }),
     }),
@@ -31,6 +29,7 @@ import mikroOrmConfig from 'mikro-orm.config';
       rootPath: join(__dirname, 'client/browser'),
     }),
     ArticlesModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

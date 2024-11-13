@@ -23,6 +23,12 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Neurosite API')
     .setVersion('1.0')
+    .addBearerAuth({
+      in: 'header',
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory, {

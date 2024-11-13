@@ -6,11 +6,7 @@ const logger = new Logger('MikroORM');
 
 const config = {
   driver: PostgreSqlDriver,
-  host: 'localhost',
-  port: 5432,
-  user: 'postgres',
-  password: 'postgres',
-  dbName: 'neurosite',
+  dbName: 'postgres',
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
   debug: true,
