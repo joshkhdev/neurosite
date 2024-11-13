@@ -11,9 +11,9 @@ import { SupabaseJwtGuard } from './guard/supabase-jwt.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('me')
+  @Get('test')
   @UseGuards(SupabaseJwtGuard)
-  public test(): string {
+  public authTest(): string {
     return 'Success';
   }
 
@@ -35,6 +35,7 @@ export class AuthController {
   // }
 
   // @Post('update-password')
+  // @UseGuards(SupabaseJwtGuard)
   // public updatePassword(
   //   @Body() user: AuthUserPasswordDto,
   // ): Observable<UserResponse> {
