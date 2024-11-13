@@ -20,10 +20,7 @@ import mikroOrmConfig from 'mikro-orm.config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        host: config.get('DB_HOST'),
-        port: config.get('DB_PORT'),
-        user: config.get('DB_USER'),
-        password: config.get('DB_PASSWORD'),
+        clientUrl: config.get('SUPABASE_URL'),
         ...mikroOrmConfig,
       }),
     }),
