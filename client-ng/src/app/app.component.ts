@@ -8,6 +8,6 @@ import { HeaderComponent } from './shared/components/header/header.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   standalone: true,
-  imports: [HeaderComponent, RouterOutlet, TuiRoot],
+  imports: [HeaderComponent, RouterOutlet, TuiRoot, TuiRoot, TuiRoot],
 })
 export class AppComponent {}

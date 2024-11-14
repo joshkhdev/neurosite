@@ -6,6 +6,7 @@ import { ProjectsComponent } from './pages/projects/projects.component';
 import { PsyComponent } from './pages/psy/psy.component';
 import { ShopComponent } from './pages/shop/shop.component';
 import { AboutComponent } from './pages/about/about.component';
+import { LoginComponent } from './pages/login/login.component';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,10 @@ export const routes: Routes = [
   {
     path: 'about',
     component: AboutComponent,
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
   },
   {
     path: '**',

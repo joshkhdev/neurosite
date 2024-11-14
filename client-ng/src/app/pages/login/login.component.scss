@@ -1,0 +1,36 @@
+.login {
+  padding: 16px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+
+  &__header {
+    text-align: center;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .login-form {
+      min-width: 250px;
+      display: flex;
+      flex-direction: column;
+      row-gap: 16px;
+    }
+  }
+}
+
+.password-rule {
+  .check-icon {
+    margin-right: 8px;
+    color: var(--tui-text-positive);
+
+    &.error {
+      color: var(--tui-text-negative);
+    }
+  }
+}

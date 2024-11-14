@@ -1,1 +1,82 @@
-<p>login works!</p>
+<div class="login">
+  <div class="login__header" tuiHeader="s">
+    <div tuiTitle>
+      Вход для администраторов
+    </div>
+  </div>
+
+  <div class="login__content">
+    <form [formGroup]="loginFormGroup" class="login-form">
+      <tui-input formControlName="email" class="email-control">
+        Введите почту
+        <span class="tui-required"></span>
+        <input
+          tuiTextfieldLegacy
+          type="email"
+          placeholder="user@example.com"
+          autocomplete="email"
+        />
+      </tui-input>
+
+      <tui-input
+        formControlName="password"
+        tuiHintDirection="right"
+        [tuiHintContent]="passwordTootip"
+        class="password-control"
+      >
+        Введите пароль
+        <span class="tui-required"></span>
+        <input
+          tuiTextfieldLegacy
+          type="password"
+          autocomplete="current-password"
+        />
+      </tui-input>
+
+      <button
+        tuiButton
+        type="button"
+        size="m"
+        appearance="primary"
+        (click)="login()"
+      >
+        Войти
+      </button>
+    </form>
+  </div>
+</div>
+
+<ng-template #passwordTootip>
+  <div class="password-rule">
+    <tui-icon
+      [icon]="passwordHasError(PasswordErrorEnum.MinLength) ? '@tui.x' : '@tui.check'"
+      class="check-icon"
+      [class.error]="passwordHasError(PasswordErrorEnum.MinLength)"
+    />
+    Не менее 8 символов
+  </div>
+  <div class="password-rule">
+    <tui-icon
+      [icon]="passwordHasError(PasswordErrorEnum.Uppercase) || passwordHasError(PasswordErrorEnum.Lowercase) ? '@tui.x' : '@tui.check'"
+      class="check-icon"
+      [class.error]="passwordHasError(PasswordErrorEnum.Uppercase)"
+    />
+    Заглавные и строчные символы
+  </div>
+  <div class="password-rule">
+    <tui-icon
+      [icon]="passwordHasError(PasswordErrorEnum.Digit) ? '@tui.x' : '@tui.check'"
+      class="check-icon"
+      [class.error]="passwordHasError(PasswordErrorEnum.Digit)"
+    />
+    Цифры
+  </div>
+  <div class="password-rule">
+    <tui-icon
+      [icon]="passwordHasError(PasswordErrorEnum.SpecialChar) ? '@tui.x' : '@tui.check'"
+      class="check-icon"
+      [class.error]="passwordHasError(PasswordErrorEnum.SpecialChar)"
+    />
+    Специальные символы
+  </div>
+</ng-template>
