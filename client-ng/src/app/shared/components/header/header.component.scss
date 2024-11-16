@@ -42,7 +42,8 @@
         white-space: nowrap;
         cursor: pointer;
 
-        &:hover, &:active {
+        &:hover,
+        &:active {
           background-color: var(--color-aqua);
           transition: all 0.4s ease-out;
         }
