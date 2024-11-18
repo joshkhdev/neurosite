@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -53,7 +54,7 @@ export class ArticlesController {
   }
 
   @Patch(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Update article' })
   @ApiNoContentResponse({ description: 'Article updated' })
   @ApiNotFoundResponse({ description: 'Article not found' })
@@ -65,7 +66,7 @@ export class ArticlesController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete article' })
   @ApiNoContentResponse({ description: 'Article deleted' })
   @ApiNotFoundResponse({ description: 'Article not found' })
