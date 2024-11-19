@@ -3,9 +3,8 @@ import { EntityManager, EntityRepository, wrap } from '@mikro-orm/postgresql';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { User } from './entities/user.entity';
 import { from, map, Observable, switchMap } from 'rxjs';
-import { ICreateUser } from 'src/auth/dto/auth.dto';
-import { UpdateUserDto } from './contracts/update-user.dto';
 import { v4 } from 'uuid';
+import { CreateUserDto } from './contracts/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -35,7 +34,7 @@ export class UsersService {
     );
   }
 
-  public create(createUser: ICreateUser): Observable<User> {
+  public create(createUser: CreateUserDto): Observable<User> {
     const user = new User();
     user.id = v4();
 
@@ -44,10 +43,10 @@ export class UsersService {
     return from(this.em.persistAndFlush(user)).pipe(map(() => user));
   }
 
-  public update(id: string, updateUserDto: UpdateUserDto): Observable<void> {
+  public update(id: string, userData: Partial<User>): Observable<void> {
     return this.findOne(id).pipe(
       switchMap((user) => {
-        wrap(user).assign(updateUserDto);
+        wrap(user).assign(userData);
 
         return from(this.em.persistAndFlush(user));
       }),

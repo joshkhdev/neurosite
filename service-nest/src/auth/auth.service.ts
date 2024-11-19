@@ -1,16 +1,15 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import * as argon2 from 'argon2';
-import { from, map, Observable, of, switchMap, zip } from 'rxjs';
 import {
-  AuthSession,
-  AuthUserDto,
-  CreateUserDto,
-  ICreateUser,
-  JwtPayload,
-} from './dto/auth.dto';
-import { UsersService } from 'src/users/users.service';
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import * as argon2 from 'argon2';
+import { from, map, Observable, switchMap, zip } from 'rxjs';
+import { AuthSession, AuthUserDto, JwtPayload } from './dto/auth.dto';
+import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { CreateUserDto } from '../users/contracts/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,9 +20,9 @@ export class AuthService {
   ) {}
 
   public signUp(createUserDto: CreateUserDto): Observable<AuthSession> {
-    return this.hashPassword(createUserDto.password).pipe(
+    return this.hashValue(createUserDto.password).pipe(
       switchMap((passwordHash: string) => {
-        const userData: ICreateUser = {
+        const userData: CreateUserDto = {
           ...createUserDto,
           password: passwordHash,
         };
@@ -44,7 +43,7 @@ export class AuthService {
         return user;
       }),
       switchMap((user) =>
-        this.verifyPassword(user.password, authUserDto.password).pipe(
+        this.verifyHash(user.password, authUserDto.password).pipe(
           map((isMatch) => {
             if (!isMatch) {
               throw new ConflictException('Password is incorrect');
@@ -66,12 +65,54 @@ export class AuthService {
         }).pipe(
           switchMap((tokens) => {
             return this.updateRefreshToken(user.id, tokens.refreshToken).pipe(
-              switchMap(() => of(tokens)),
+              map(() => tokens),
             );
           }),
         ),
       ),
     );
+  }
+
+  public refreshTokens(
+    userId: string,
+    refreshToken: string,
+  ): Observable<AuthSession> {
+    return this.usersService.findOne(userId).pipe(
+      map((user) => {
+        if (!user || !user.refreshToken) {
+          throw new ForbiddenException('Access Denied');
+        }
+
+        return user;
+      }),
+      switchMap((user) =>
+        this.verifyHash(user.refreshToken!, refreshToken).pipe(
+          map((isMatch) => {
+            if (!isMatch) {
+              throw new ForbiddenException('Access Denied');
+            }
+
+            return user;
+          }),
+        ),
+      ),
+      switchMap((user) =>
+        this.signTokens({
+          sub: user.id,
+          name: user.name,
+          role: user.role,
+        }),
+      ),
+      switchMap((tokens) =>
+        this.updateRefreshToken(userId, tokens.refreshToken).pipe(
+          map(() => tokens),
+        ),
+      ),
+    );
+  }
+
+  public logout(userId: string): Observable<void> {
+    return this.usersService.update(userId, { refreshToken: undefined });
   }
 
   private signTokens(payload: JwtPayload): Observable<AuthSession> {
@@ -92,25 +133,22 @@ export class AuthService {
     );
   }
 
-  public logout(userId: string): Observable<void> {
-    return this.usersService.update(userId, { refreshToken: undefined });
-  }
-
   private updateRefreshToken(
     userId: string,
     refreshToken: string,
   ): Observable<void> {
-    return this.usersService.update(userId, { refreshToken });
+    return this.hashValue(refreshToken).pipe(
+      switchMap((refreshTokenHash: string) =>
+        this.usersService.update(userId, { refreshToken: refreshTokenHash }),
+      ),
+    );
   }
 
-  private hashPassword(password: string): Observable<string> {
-    return from(argon2.hash(password));
+  private hashValue(value: string): Observable<string> {
+    return from(argon2.hash(value));
   }
 
-  private verifyPassword(
-    passwordHash: string,
-    password: string,
-  ): Observable<boolean> {
-    return from(argon2.verify(passwordHash, password));
+  private verifyHash(hash: string, value: string): Observable<boolean> {
+    return from(argon2.verify(hash, value));
   }
 }

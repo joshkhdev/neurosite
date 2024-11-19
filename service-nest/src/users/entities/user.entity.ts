@@ -13,6 +13,24 @@ export enum UserRole {
   Admin = 'admin',
 }
 
+export const userHasAccess = (
+  userRole: UserRole,
+  requiredRole: UserRole,
+): boolean => {
+  console.log(userRole, requiredRole);
+
+  switch (userRole) {
+    case UserRole.User:
+      return requiredRole === UserRole.User;
+    case UserRole.Moderator:
+      return (
+        requiredRole === UserRole.User || requiredRole === UserRole.Moderator
+      );
+    case UserRole.Admin:
+      return true;
+  }
+};
+
 @Entity()
 export class User {
   @PrimaryKey({ type: 'uuid' })
