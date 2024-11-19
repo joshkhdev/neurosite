@@ -10,16 +10,16 @@ import { from, map, Observable, switchMap } from 'rxjs';
 export class ArticlesService {
   constructor(
     @InjectRepository(Article)
-    private readonly articleRepository: EntityRepository<Article>,
+    private readonly articlesRepository: EntityRepository<Article>,
     private readonly em: EntityManager,
   ) {}
 
   public findAll(): Observable<Article[]> {
-    return from(this.articleRepository.findAll());
+    return from(this.articlesRepository.findAll());
   }
 
   public findOne(id: number): Observable<Article> {
-    return from(this.articleRepository.findOne(id)).pipe(
+    return from(this.articlesRepository.findOne(id)).pipe(
       map((article) => {
         if (!article) {
           throw new NotFoundException(`Article with id=${id} was not found`);

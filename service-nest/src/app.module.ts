@@ -7,6 +7,7 @@ import { join } from 'path';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ArticlesModule } from './articles/articles.module';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 import mikroOrmConfig from 'mikro-orm.config';
 
 @Module({
@@ -21,8 +22,8 @@ import mikroOrmConfig from 'mikro-orm.config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        clientUrl: config.get('SUPABASE_DB_URL'),
         ...mikroOrmConfig,
+        clientUrl: config.get('DB_URL'),
       }),
     }),
     ServeStaticModule.forRoot({
@@ -30,6 +31,7 @@ import mikroOrmConfig from 'mikro-orm.config';
     }),
     ArticlesModule,
     AuthModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

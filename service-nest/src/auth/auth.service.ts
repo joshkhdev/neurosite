@@ -1,59 +1,154 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import * as argon2 from 'argon2';
+import { from, map, Observable, switchMap, zip } from 'rxjs';
+import { AuthSession, AuthUserDto, JwtPayload } from './dto/auth.dto';
+import { UsersService } from '../users/users.service';
+import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { from, Observable } from 'rxjs';
-import { AuthUserDto } from './dto/auth.dto';
+import { CreateUserDto } from '../users/contracts/user.dto';
 
 @Injectable()
 export class AuthService {
-  private readonly client: SupabaseClient;
+  constructor(
+    private readonly config: ConfigService,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  constructor(private readonly config: ConfigService) {
-    this.client = createClient(
-      this.config.getOrThrow('SUPABASE_URL'),
-      this.config.getOrThrow('SUPABASE_ANON_KEY'),
-      {
-        auth: {
-          autoRefreshToken: true,
-          detectSessionInUrl: false,
-        },
-      },
-    );
-  }
-
-  public signUp(user: AuthUserDto): Observable<any> {
-    return from(
-      this.client.auth.signUp({
-        email: user.email,
-        password: user.password,
+  public signUp(createUserDto: CreateUserDto): Observable<AuthSession> {
+    return this.hashValue(createUserDto.password).pipe(
+      switchMap((passwordHash: string) => {
+        const userData: CreateUserDto = {
+          ...createUserDto,
+          password: passwordHash,
+        };
+        return this.usersService
+          .create(userData)
+          .pipe(switchMap(() => this.signIn(createUserDto)));
       }),
     );
   }
 
-  public signIn(user: AuthUserDto): Observable<any> {
-    return from(
-      this.client.auth.signInWithPassword({
-        email: user.email,
-        password: user.password,
+  public signIn(authUserDto: AuthUserDto): Observable<AuthSession> {
+    return this.usersService.findByEmailOrNull(authUserDto.email).pipe(
+      map((user) => {
+        if (!user) {
+          throw new ConflictException('User with this email is not registered');
+        }
+
+        return user;
       }),
+      switchMap((user) =>
+        this.verifyHash(user.password, authUserDto.password).pipe(
+          map((isMatch) => {
+            if (!isMatch) {
+              throw new ConflictException('Password is incorrect');
+            }
+
+            if (user.isBlocked) {
+              throw new ConflictException('User is blocked');
+            }
+
+            return user;
+          }),
+        ),
+      ),
+      switchMap((user) =>
+        this.signTokens({
+          sub: user.id,
+          name: user.name,
+          role: user.role,
+        }).pipe(
+          switchMap((tokens) => {
+            return this.updateRefreshToken(user.id, tokens.refreshToken).pipe(
+              map(() => tokens),
+            );
+          }),
+        ),
+      ),
     );
   }
 
-  /**
-   * TODO
-   */
-  public sendResetPasswordLink(email: string): Observable<any> {
-    return from(
-      this.client.auth.resetPasswordForEmail(email, {
-        redirectTo: 'http://localhost:8080/account/reset-password',
+  public refreshTokens(
+    userId: string,
+    refreshToken: string,
+  ): Observable<AuthSession> {
+    return this.usersService.findOne(userId).pipe(
+      map((user) => {
+        if (!user || !user.refreshToken) {
+          throw new ForbiddenException('Access Denied');
+        }
+
+        return user;
       }),
+      switchMap((user) =>
+        this.verifyHash(user.refreshToken!, refreshToken).pipe(
+          map((isMatch) => {
+            if (!isMatch) {
+              throw new ForbiddenException('Access Denied');
+            }
+
+            return user;
+          }),
+        ),
+      ),
+      switchMap((user) =>
+        this.signTokens({
+          sub: user.id,
+          name: user.name,
+          role: user.role,
+        }),
+      ),
+      switchMap((tokens) =>
+        this.updateRefreshToken(userId, tokens.refreshToken).pipe(
+          map(() => tokens),
+        ),
+      ),
     );
   }
 
-  /**
-   * TODO
-   */
-  public updatePassword(password: string): Observable<any> {
-    return from(this.client.auth.updateUser({ password }));
+  public logout(userId: string): Observable<void> {
+    return this.usersService.update(userId, { refreshToken: undefined });
+  }
+
+  private signTokens(payload: JwtPayload): Observable<AuthSession> {
+    return zip([
+      this.jwtService.signAsync(payload, {
+        secret: this.config.get('JWT_ACCESS_SECRET'),
+        expiresIn: this.config.get('JWT_ACCESS_EXPIRATION'),
+      }),
+      this.jwtService.signAsync(payload, {
+        secret: this.config.get('JWT_REFRESH_SECRET'),
+        expiresIn: this.config.get('JWT_REFRESH_EXPIRATION'),
+      }),
+    ]).pipe(
+      map(([accessToken, refreshToken]) => ({
+        accessToken,
+        refreshToken,
+      })),
+    );
+  }
+
+  private updateRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Observable<void> {
+    return this.hashValue(refreshToken).pipe(
+      switchMap((refreshTokenHash: string) =>
+        this.usersService.update(userId, { refreshToken: refreshTokenHash }),
+      ),
+    );
+  }
+
+  private hashValue(value: string): Observable<string> {
+    return from(argon2.hash(value));
+  }
+
+  private verifyHash(hash: string, value: string): Observable<boolean> {
+    return from(argon2.verify(hash, value));
   }
 }

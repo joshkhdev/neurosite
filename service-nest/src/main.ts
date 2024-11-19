@@ -7,6 +7,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MikroORM } from '@mikro-orm/core';
 import { ValidationPipe } from '@nestjs/common';
+import fastifyHelmet from '@fastify/helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -34,6 +35,8 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, documentFactory, {
     useGlobalPrefix: true,
   });
+
+  await app.register(fastifyHelmet);
 
   await app.listen(process.env.PORT ?? 8080, '0.0.0.0');
 }
