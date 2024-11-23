@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
-import { Article } from './entities/article.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, EntityRepository, wrap } from '@mikro-orm/postgresql';
 import { from, map, Observable, switchMap } from 'rxjs';
+import { CreateArticleDto } from './dto/create-article.dto';
+import { UpdateArticleDto } from './dto/update-article.dto';
+import { Article } from './entities/article.entity';
 
 @Injectable()
 export class ArticlesService {
@@ -18,9 +18,13 @@ export class ArticlesService {
     return from(this.articlesRepository.findAll());
   }
 
+  public findAllPublic(): Observable<Article[]> {
+    return from(this.articlesRepository.find({ public: true }));
+  }
+
   public findOne(id: number): Observable<Article> {
     return from(this.articlesRepository.findOne(id)).pipe(
-      map((article) => {
+      map(article => {
         if (!article) {
           throw new NotFoundException(`Article with id=${id} was not found`);
         }
@@ -43,7 +47,7 @@ export class ArticlesService {
     updateArticleDto: UpdateArticleDto,
   ): Observable<void> {
     return this.findOne(id).pipe(
-      switchMap((article) => {
+      switchMap(article => {
         wrap(article).assign(updateArticleDto);
 
         return from(this.em.persistAndFlush(article));
@@ -53,7 +57,7 @@ export class ArticlesService {
 
   public remove(id: number): Observable<void> {
     return this.findOne(id).pipe(
-      switchMap((article) => {
+      switchMap(article => {
         return from(this.em.removeAndFlush(article));
       }),
     );

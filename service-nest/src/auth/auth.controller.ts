@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthUserDto, JwtFastifyRequest } from './dto/auth.dto';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { AuthSession, AuthUserDto, JwtFastifyRequest } from './dto/auth.dto';
 import { JwtGuard } from '../shared/guards/jwt.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import { RefreshTokenGuard } from '../shared/guards/refresh-token.guard';
 import { CreateUserDto } from '../users/contracts/user.dto';
 
@@ -12,24 +13,28 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
-  public signUp(@Body() createUserDto: CreateUserDto) {
+  @ApiOperation({ summary: 'Register as a new user' })
+  public signUp(@Body() createUserDto: CreateUserDto): Observable<AuthSession> {
     return this.authService.signUp(createUserDto);
   }
 
   @Post('sign-in')
-  public signIn(@Body() authUserDto: AuthUserDto) {
+  @ApiOperation({ summary: 'Log in your account' })
+  public signIn(@Body() authUserDto: AuthUserDto): Observable<AuthSession> {
     return this.authService.signIn(authUserDto);
   }
 
-  @UseGuards(JwtGuard)
   @Get('logout')
-  public logout(@Req() request: JwtFastifyRequest) {
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Logout from current session' })
+  public logout(@Req() request: JwtFastifyRequest): Observable<void> {
     return this.authService.logout(request.user.sub);
   }
 
-  @UseGuards(RefreshTokenGuard)
   @Get('refresh')
-  public refreshTokens(@Req() request: JwtFastifyRequest) {
+  @UseGuards(RefreshTokenGuard)
+  @ApiOperation({ summary: 'Refresh current session' })
+  public refresh(@Req() request: JwtFastifyRequest): Observable<AuthSession> {
     const { sub, refreshToken } = request.user;
 
     return this.authService.refreshTokens(sub, refreshToken);

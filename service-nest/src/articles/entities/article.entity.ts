@@ -10,4 +10,7 @@ export class Article {
 
   @Property({ type: TextType })
   content: string = '';
+
+  @Property({ default: false })
+  public: boolean = false;
 }

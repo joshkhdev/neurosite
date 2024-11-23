@@ -28,9 +28,9 @@ export class AuthUserDto implements IAuthUserEmail, IAuthUserPassword {
   public readonly password: string;
 }
 
-export interface AuthSession {
-  readonly accessToken: string;
-  readonly refreshToken: string;
+export class AuthSession {
+  public readonly accessToken: string;
+  public readonly refreshToken: string;
 }
 
 export interface JwtPayload {

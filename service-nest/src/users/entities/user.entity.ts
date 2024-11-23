@@ -28,6 +28,8 @@ export const userHasAccess = (
       );
     case UserRole.Admin:
       return true;
+    default:
+      return false;
   }
 };
 
@@ -46,6 +48,9 @@ export class User {
   @Unique()
   @Property()
   name: string;
+
+  @Property()
+  displayName: string;
 
   @Enum({ items: () => UserRole, default: UserRole.User })
   role: UserRole;

@@ -35,16 +35,16 @@ export class AuthService {
 
   public signIn(authUserDto: AuthUserDto): Observable<AuthSession> {
     return this.usersService.findByEmailOrNull(authUserDto.email).pipe(
-      map((user) => {
+      map(user => {
         if (!user) {
           throw new ConflictException('User with this email is not registered');
         }
 
         return user;
       }),
-      switchMap((user) =>
+      switchMap(user =>
         this.verifyHash(user.password, authUserDto.password).pipe(
-          map((isMatch) => {
+          map(isMatch => {
             if (!isMatch) {
               throw new ConflictException('Password is incorrect');
             }
@@ -57,13 +57,13 @@ export class AuthService {
           }),
         ),
       ),
-      switchMap((user) =>
+      switchMap(user =>
         this.signTokens({
           sub: user.id,
           name: user.name,
           role: user.role,
         }).pipe(
-          switchMap((tokens) => {
+          switchMap(tokens => {
             return this.updateRefreshToken(user.id, tokens.refreshToken).pipe(
               map(() => tokens),
             );
@@ -77,17 +77,17 @@ export class AuthService {
     userId: string,
     refreshToken: string,
   ): Observable<AuthSession> {
-    return this.usersService.findOne(userId).pipe(
-      map((user) => {
-        if (!user || !user.refreshToken) {
+    return this.usersService.findByUuid(userId).pipe(
+      map(user => {
+        if (!user.refreshToken) {
           throw new ForbiddenException('Access Denied');
         }
 
         return user;
       }),
-      switchMap((user) =>
+      switchMap(user =>
         this.verifyHash(user.refreshToken!, refreshToken).pipe(
-          map((isMatch) => {
+          map(isMatch => {
             if (!isMatch) {
               throw new ForbiddenException('Access Denied');
             }
@@ -96,14 +96,14 @@ export class AuthService {
           }),
         ),
       ),
-      switchMap((user) =>
+      switchMap(user =>
         this.signTokens({
           sub: user.id,
           name: user.name,
           role: user.role,
         }),
       ),
-      switchMap((tokens) =>
+      switchMap(tokens =>
         this.updateRefreshToken(userId, tokens.refreshToken).pipe(
           map(() => tokens),
         ),
