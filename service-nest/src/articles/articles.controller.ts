@@ -10,20 +10,19 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOperation,
 } from '@nestjs/swagger';
 import { map, Observable } from 'rxjs';
-import { Public, Role } from '@shared/decorators';
+import { AuthRequired, Public, Role } from '@shared/decorators';
+import { UserRole } from '@/users/models/user.interfaces';
 import { ArticlesService } from './articles.service';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
-import { ArticleDto } from './dto/article.dto';
-import { UserRole } from '@/users/entities/user.entity';
+import { CreateArticleDto } from './models/create-article.dto';
+import { UpdateArticleDto } from './models/update-article.dto';
+import { ArticleDto } from './models/article.dto';
 
-@ApiBearerAuth()
+@AuthRequired()
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}

@@ -3,14 +3,14 @@ import { Entity, PrimaryKey, Property, TextType } from '@mikro-orm/postgresql';
 @Entity()
 export class Article {
   @PrimaryKey()
-  id: number;
+  public id: number;
 
   @Property()
-  title: string;
+  public title: string;
 
   @Property({ type: TextType })
-  content: string = '';
+  public content: string = '';
 
   @Property({ default: false })
-  public: boolean = false;
+  public isPublic: boolean = false;
 }

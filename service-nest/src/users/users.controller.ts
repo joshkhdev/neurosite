@@ -9,19 +9,20 @@ import {
   ParseUUIDPipe,
   Req,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiNotFoundResponse, ApiOperation } from '@nestjs/swagger';
 import { map, Observable } from 'rxjs';
-import { Public, Role } from '@shared/decorators';
-import { AuthUserEmailDto, JwtFastifyRequest } from '../auth/dto/auth.dto';
-import { UpdateUserDto, UpdateUserRoleDto } from './contracts/user.dto';
+import { AuthRequired, Public, Role } from '@shared/decorators';
+import { JwtFastifyRequest } from '@/auth/models/auth.interfaces';
+import { AuthUserEmailDto } from '@/auth/models/auth.dto';
+import { UpdateUserDto, UpdateUserRoleDto } from './models/user.dto';
 import {
   UserProfileResponseDto,
   UserResponseDto,
-} from './contracts/user-response.dto';
-import { UserRole } from './entities/user.entity';
+} from './models/user-response.dto';
+import { UserRole } from './models/user.interfaces';
 import { UsersService } from './users.service';
 
-@ApiBearerAuth()
+@AuthRequired()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -38,6 +39,7 @@ export class UsersController {
   @Get(':uuid')
   @Role(UserRole.Moderator)
   @ApiOperation({ summary: 'Get user by uuid' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   public findOne(
     @Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string,
   ): Observable<UserResponseDto> {
@@ -46,32 +48,35 @@ export class UsersController {
       .pipe(map(user => new UserResponseDto(user)));
   }
 
-  @Patch(':id/role')
+  @Patch(':uuid/role')
   @Role(UserRole.Admin)
   @ApiOperation({ summary: 'Update user role' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   public updateRole(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string,
     @Body() updateDto: UpdateUserRoleDto,
   ): Observable<void> {
-    return this.usersService.update(id, updateDto);
+    return this.usersService.update(uuid, updateDto);
   }
 
-  @Delete(':id')
+  @Delete(':uuid')
   @Role(UserRole.Admin)
   @ApiOperation({ summary: 'Block user' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   public block(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string,
   ): Observable<void> {
-    return this.usersService.changeIsBlocked(id, true);
+    return this.usersService.changeIsBlocked(uuid, true);
   }
 
-  @Post(':id/unblock')
+  @Post(':uuid/unblock')
   @Role(UserRole.Admin)
   @ApiOperation({ summary: 'Unblock user' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   public unblock(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string,
   ): Observable<void> {
-    return this.usersService.changeIsBlocked(id, false);
+    return this.usersService.changeIsBlocked(uuid, false);
   }
 
   @Get('profile')
@@ -82,17 +87,6 @@ export class UsersController {
   ): Observable<UserProfileResponseDto> {
     return this.usersService
       .findByUuid(request.user.sub)
-      .pipe(map(user => new UserProfileResponseDto(user)));
-  }
-
-  @Get('profile/:name')
-  @Public()
-  @ApiOperation({ summary: 'Get user profile by name' })
-  public getProfile(
-    @Param('name') name: string,
-  ): Observable<UserProfileResponseDto> {
-    return this.usersService
-      .findByName(name)
       .pipe(map(user => new UserProfileResponseDto(user)));
   }
 
@@ -114,5 +108,17 @@ export class UsersController {
     @Body() updateDto: AuthUserEmailDto,
   ): Observable<void> {
     return this.usersService.update(request.user.sub, updateDto);
+  }
+
+  @Get('profile/:name')
+  @Public()
+  @ApiOperation({ summary: 'Get user profile by name' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  public getProfile(
+    @Param('name') name: string,
+  ): Observable<UserProfileResponseDto> {
+    return this.usersService
+      .findByName(name)
+      .pipe(map(user => new UserProfileResponseDto(user)));
   }
 }

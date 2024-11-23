@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { EntityManager, EntityRepository, wrap } from '@mikro-orm/postgresql';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { from, map, Observable, switchMap } from 'rxjs';
 import { v4 } from 'uuid';
-import { CreateUserDto } from './contracts/user.dto';
-import { User } from './entities/user.entity';
+import { CreateUserDto } from './models/user.dto';
+import { User } from './models/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -70,6 +70,22 @@ export class UsersService {
       switchMap(user => {
         user.isBlocked = isBlocked;
         return from(this.em.persistAndFlush(user));
+      }),
+    );
+  }
+
+  public handleUserConflicts(createUserDto: CreateUserDto): Observable<void> {
+    return from(
+      this.usersRepository.findOne({
+        $or: [{ email: createUserDto.email }, { name: createUserDto.name }],
+      }),
+    ).pipe(
+      map(user => {
+        if (user) {
+          throw new ConflictException('User already registered');
+        }
+
+        return void 0;
       }),
     );
   }

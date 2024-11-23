@@ -1,4 +1,5 @@
-import { User, UserRole } from '../entities/user.entity';
+import { User } from './user.entity';
+import { UserRole } from './user.interfaces';
 
 export interface IUserResponse {
   readonly id: string;

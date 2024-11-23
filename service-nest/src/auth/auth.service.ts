@@ -3,13 +3,14 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import { from, map, Observable, switchMap, zip } from 'rxjs';
-import { AuthSession, AuthUserDto, JwtPayload } from './dto/auth.dto';
+import { AuthSessionDto, AuthUserDto } from './models/auth.dto';
+import { JwtPayload } from './models/auth.interfaces';
+import { CreateUserDto } from '../users/models/user.dto';
 import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { CreateUserDto } from '../users/contracts/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -19,21 +20,22 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  public signUp(createUserDto: CreateUserDto): Observable<AuthSession> {
+  public signUp(createUserDto: CreateUserDto): Observable<AuthSessionDto> {
     return this.hashValue(createUserDto.password).pipe(
       switchMap((passwordHash: string) => {
         const userData: CreateUserDto = {
           ...createUserDto,
           password: passwordHash,
         };
-        return this.usersService
-          .create(userData)
-          .pipe(switchMap(() => this.signIn(createUserDto)));
+        return this.usersService.handleUserConflicts(userData).pipe(
+          switchMap(() => this.usersService.create(userData)),
+          switchMap(() => this.signIn(createUserDto)),
+        );
       }),
     );
   }
 
-  public signIn(authUserDto: AuthUserDto): Observable<AuthSession> {
+  public signIn(authUserDto: AuthUserDto): Observable<AuthSessionDto> {
     return this.usersService.findByEmailOrNull(authUserDto.email).pipe(
       map(user => {
         if (!user) {
@@ -76,7 +78,7 @@ export class AuthService {
   public refreshTokens(
     userId: string,
     refreshToken: string,
-  ): Observable<AuthSession> {
+  ): Observable<AuthSessionDto> {
     return this.usersService.findByUuid(userId).pipe(
       map(user => {
         if (!user.refreshToken) {
@@ -115,7 +117,7 @@ export class AuthService {
     return this.usersService.update(userId, { refreshToken: undefined });
   }
 
-  private signTokens(payload: JwtPayload): Observable<AuthSession> {
+  private signTokens(payload: JwtPayload): Observable<AuthSessionDto> {
     return zip([
       this.jwtService.signAsync(payload, {
         secret: this.config.get('JWT_ACCESS_SECRET'),

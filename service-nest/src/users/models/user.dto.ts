@@ -1,6 +1,6 @@
 import { IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
-import { AuthUserDto } from '../../auth/dto/auth.dto';
-import { UserRole } from '../entities/user.entity';
+import { AuthUserDto } from '../../auth/models/auth.dto';
+import { UserRole } from './user.interfaces';
 
 export class CreateUserDto extends AuthUserDto {
   @IsString()

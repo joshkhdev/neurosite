@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, EntityRepository, wrap } from '@mikro-orm/postgresql';
 import { from, map, Observable, switchMap } from 'rxjs';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
-import { Article } from './entities/article.entity';
+import { Article } from './models/article.entity';
+import { CreateArticleDto } from './models/create-article.dto';
+import { UpdateArticleDto } from './models/update-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -19,7 +19,7 @@ export class ArticlesService {
   }
 
   public findAllPublic(): Observable<Article[]> {
-    return from(this.articlesRepository.find({ public: true }));
+    return from(this.articlesRepository.find({ isPublic: true }));
   }
 
   public findOne(id: number): Observable<Article> {

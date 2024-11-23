@@ -1,6 +1,4 @@
 import { IsEmail, IsStrongPassword } from 'class-validator';
-import { FastifyRequest } from 'fastify';
-import { UserRole } from '../../users/entities/user.entity';
 
 export interface IAuthUserEmail {
   readonly email: string;
@@ -28,21 +26,7 @@ export class AuthUserDto implements IAuthUserEmail, IAuthUserPassword {
   public readonly password: string;
 }
 
-export class AuthSession {
+export class AuthSessionDto {
   public readonly accessToken: string;
   public readonly refreshToken: string;
-}
-
-export interface JwtPayload {
-  readonly sub: string;
-  readonly name: string;
-  readonly role: UserRole;
-}
-
-export interface JwtPayloadExtended extends JwtPayload {
-  readonly refreshToken: string;
-}
-
-export interface JwtFastifyRequest extends FastifyRequest {
-  user: JwtPayloadExtended;
 }
