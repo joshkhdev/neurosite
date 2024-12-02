@@ -19,7 +19,7 @@ const config = {
     pathTs: 'src/migrations',
     glob: '!(*.d).{js,ts}',
     transactional: true,
-    disableForeignKeys: true,
+    disableForeignKeys: false,
     allOrNothing: true,
     dropTables: false,
     safe: true,

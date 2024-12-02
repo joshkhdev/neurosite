@@ -1,4 +1,4 @@
 import { SetMetadata } from '@nestjs/common';
-import { SkipAuthGuard } from '../../shared/guards/skip-auth.guard';
+import { JwtGuard } from '@shared/guards';
 
-export const Public = () => SetMetadata(SkipAuthGuard, true);
+export const Public = () => SetMetadata(JwtGuard.IsPublicKey, true);

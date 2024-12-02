@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiOperation } from '@nestjs/swagger';
-import { AppInfoDto } from './shared/dto/app-info.dto';
+import { AppInfoDto } from './shared/models/app-info.dto';
 
 @Controller()
 export class AppController {

@@ -5,10 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { FastifyRequest } from 'fastify';
 
 @Injectable()
-export class RefreshTokenStrategy extends PassportStrategy(
-  Strategy,
-  'jwt-refresh',
-) {
+export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(config: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -18,9 +15,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
   }
 
   public validate(request: FastifyRequest, payload: any) {
-    const refreshToken = request.headers.authorization
-      ?.replace('Bearer', '')
-      .trim();
+    const refreshToken = request.headers.authorization?.replace('Bearer', '').trim();
     return { ...payload, refreshToken };
   }
 }

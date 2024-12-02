@@ -6,80 +6,110 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   ParseUUIDPipe,
   Req,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiNotFoundResponse, ApiOperation } from '@nestjs/swagger';
+import { map, Observable } from 'rxjs';
+import { AuthRequired, Public, Role } from '@shared/decorators';
+import { JwtFastifyRequest } from '@/auth/models/auth.interfaces';
+import { AuthUserEmailDto } from '@/auth/models/auth.dto';
+import { UpdateUserDto, UpdateUserRoleDto } from './models/user.dto';
+import { UserProfileResponseDto, UserResponseDto } from './models/user-response.dto';
+import { UserRole } from './models/user.interfaces';
 import { UsersService } from './users.service';
-import { UpdateUserNameDto, UpdateUserRoleDto } from './contracts/user.dto';
-import { JwtGuard } from '../shared/guards/jwt.guard';
-import { Role } from '../shared/decorators/role.decorator';
-import { UserRole } from './entities/user.entity';
-import { AuthUserEmailDto, JwtFastifyRequest } from 'src/auth/dto/auth.dto';
 
-@ApiBearerAuth()
-@UseGuards(JwtGuard)
+@AuthRequired()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Role(UserRole.Moderator)
   @Get()
+  @Role(UserRole.Moderator)
+  @ApiOperation({ summary: 'Get all users' })
   public findAll() {
-    return this.usersService.findAll();
+    return this.usersService
+      .findAll()
+      .pipe(map(users => users.map(user => new UserResponseDto(user))));
   }
 
-  @Role(UserRole.User)
-  @Get('profile')
-  public getProfile(@Req() request: JwtFastifyRequest) {
-    return this.usersService.findOne(request.user.sub);
+  @Get(':uuid')
+  @Role(UserRole.Moderator)
+  @ApiOperation({ summary: 'Get user by uuid' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  public findOne(
+    @Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string,
+  ): Observable<UserResponseDto> {
+    return this.usersService.findByUuid(uuid).pipe(map(user => new UserResponseDto(user)));
   }
 
-  @Role(UserRole.User)
-  @Get(':id')
-  public findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.usersService.findOne(id);
-  }
-
+  @Patch(':uuid/role')
   @Role(UserRole.Admin)
-  @Patch(':id/role')
+  @ApiOperation({ summary: 'Update user role' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   public updateRole(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string,
     @Body() updateDto: UpdateUserRoleDto,
-  ) {
-    return this.usersService.update(id, updateDto);
+  ): Observable<void> {
+    return this.usersService.update(uuid, updateDto);
   }
 
-  @Role(UserRole.User)
-  @Patch(':id/name')
-  public updateName(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateUserNameDto,
-  ) {
-    // TODO check if this is current user
-    return this.usersService.update(id, updateDto);
+  @Delete(':uuid')
+  @Role(UserRole.Admin)
+  @ApiOperation({ summary: 'Block user' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  public block(@Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string): Observable<void> {
+    return this.usersService.changeIsBlocked(uuid, true);
   }
 
+  @Post(':uuid/unblock')
+  @Role(UserRole.Admin)
+  @ApiOperation({ summary: 'Unblock user' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  public unblock(
+    @Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string,
+  ): Observable<void> {
+    return this.usersService.changeIsBlocked(uuid, false);
+  }
+
+  @Get('profile')
   @Role(UserRole.User)
-  @Patch(':id/email')
+  @ApiOperation({ summary: 'Get current user profile' })
+  public getUserProfile(@Req() request: JwtFastifyRequest): Observable<UserProfileResponseDto> {
+    return this.usersService
+      .findByUuid(request.user.sub)
+      .pipe(map(user => new UserProfileResponseDto(user)));
+  }
+
+  @Patch('profile')
+  @Role(UserRole.User)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Update current user profile' })
+  @ApiNoContentResponse({ description: 'User profile updated' })
+  public update(
+    @Req() request: JwtFastifyRequest,
+    @Body() updateDto: UpdateUserDto,
+  ): Observable<void> {
+    return this.usersService.update(request.user.sub, updateDto);
+  }
+
+  @Patch('profile/email')
+  @Role(UserRole.User)
+  @ApiOperation({ summary: 'Update current user email' })
   public updateEmail(
-    @Param('id') id: string,
+    @Req() request: JwtFastifyRequest,
     @Body() updateDto: AuthUserEmailDto,
-  ) {
-    // TODO check if this is current user
-    return this.usersService.update(id, updateDto);
+  ): Observable<void> {
+    return this.usersService.update(request.user.sub, updateDto);
   }
 
-  @Role(UserRole.Admin)
-  @Delete(':id')
-  public block(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.usersService.changeIsBlocked(id, true);
-  }
-
-  @Role(UserRole.Admin)
-  @Post(':id/unblock')
-  public unblock(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.usersService.changeIsBlocked(id, false);
+  @Get('profile/:name')
+  @Public()
+  @ApiOperation({ summary: 'Get user profile by name' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  public getProfile(@Param('name') name: string): Observable<UserProfileResponseDto> {
+    return this.usersService.findByName(name).pipe(map(user => new UserProfileResponseDto(user)));
   }
 }

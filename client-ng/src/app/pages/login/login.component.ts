@@ -1,9 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LoginForm, LoginFormGroup, PasswordValidationError, passwordValidator } from '../../shared/interfaces/login.interfaces';
-import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiButton, TuiHint, TuiIcon, TuiTextfield } from '@taiga-ui/core';
 import { TuiInputModule, TuiTextfieldControllerModule } from '@taiga-ui/legacy';
+import {
+  LoginForm,
+  LoginFormGroup,
+  PasswordValidationError,
+  passwordValidator,
+} from '../../shared/interfaces/login.interfaces';
 
 @Component({
   selector: 'app-login',
