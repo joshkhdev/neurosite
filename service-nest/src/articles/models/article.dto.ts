@@ -1,10 +1,10 @@
 import { Article } from './article.entity';
 
 export class ArticleDto {
-  public id: number;
-  public title: string;
-  public content: string;
-  public isPublic: boolean;
+  public readonly id: number;
+  public readonly title: string;
+  public readonly content: string;
+  public readonly isPublic: boolean;
 
   constructor(article: Article) {
     this.id = article.id;

@@ -12,5 +12,5 @@ export interface JwtPayloadExtended extends JwtPayload {
 }
 
 export interface JwtFastifyRequest extends FastifyRequest {
-  user: JwtPayloadExtended;
+  readonly user: JwtPayloadExtended;
 }

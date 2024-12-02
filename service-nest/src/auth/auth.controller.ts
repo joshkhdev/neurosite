@@ -1,10 +1,7 @@
 import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { ApiConflictResponse, ApiOperation } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
-import {
-  AuthRequired,
-  AuthRequiredRefresh,
-} from '@shared/decorators/auth-required.decorator';
+import { AuthRequired, AuthRequiredRefresh } from '@shared/decorators/auth-required.decorator';
 import { AuthService } from './auth.service';
 import { AuthSessionDto, AuthUserDto } from './models/auth.dto';
 import { JwtFastifyRequest } from './models/auth.interfaces';
@@ -17,9 +14,7 @@ export class AuthController {
   @Post('sign-up')
   @ApiOperation({ summary: 'Register as a new user' })
   @ApiConflictResponse({ description: 'Registration conflict' })
-  public signUp(
-    @Body() createUserDto: CreateUserDto,
-  ): Observable<AuthSessionDto> {
+  public signUp(@Body() createUserDto: CreateUserDto): Observable<AuthSessionDto> {
     return this.authService.signUp(createUserDto);
   }
 
@@ -40,9 +35,7 @@ export class AuthController {
   @Get('refresh')
   @AuthRequiredRefresh()
   @ApiOperation({ summary: 'Refresh current session' })
-  public refresh(
-    @Req() request: JwtFastifyRequest,
-  ): Observable<AuthSessionDto> {
+  public refresh(@Req() request: JwtFastifyRequest): Observable<AuthSessionDto> {
     const { sub, refreshToken } = request.user;
 
     return this.authService.refreshTokens(sub, refreshToken);

@@ -9,11 +9,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import {
-  ApiNoContentResponse,
-  ApiNotFoundResponse,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiNotFoundResponse, ApiOperation } from '@nestjs/swagger';
 import { map, Observable } from 'rxjs';
 import { AuthRequired, Public, Role } from '@shared/decorators';
 import { UserRole } from '@/users/models/user.interfaces';
@@ -50,17 +46,13 @@ export class ArticlesController {
   @ApiOperation({ summary: 'Get article by id' })
   @ApiNotFoundResponse({ description: 'Article not found' })
   public findOne(@Param('id') id: string): Observable<ArticleDto> {
-    return this.articlesService
-      .findOne(+id)
-      .pipe(map(article => new ArticleDto(article)));
+    return this.articlesService.findOne(+id).pipe(map(article => new ArticleDto(article)));
   }
 
   @Post()
   @Role(UserRole.Moderator)
   @ApiOperation({ summary: 'Create new article' })
-  public create(
-    @Body() createArticleDto: CreateArticleDto,
-  ): Observable<ArticleDto> {
+  public create(@Body() createArticleDto: CreateArticleDto): Observable<ArticleDto> {
     return this.articlesService
       .create(createArticleDto)
       .pipe(map(article => new ArticleDto(article)));

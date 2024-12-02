@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
@@ -66,19 +62,14 @@ export class AuthService {
           role: user.role,
         }).pipe(
           switchMap(tokens => {
-            return this.updateRefreshToken(user.id, tokens.refreshToken).pipe(
-              map(() => tokens),
-            );
+            return this.updateRefreshToken(user.id, tokens.refreshToken).pipe(map(() => tokens));
           }),
         ),
       ),
     );
   }
 
-  public refreshTokens(
-    userId: string,
-    refreshToken: string,
-  ): Observable<AuthSessionDto> {
+  public refreshTokens(userId: string, refreshToken: string): Observable<AuthSessionDto> {
     return this.usersService.findByUuid(userId).pipe(
       map(user => {
         if (!user.refreshToken) {
@@ -106,9 +97,7 @@ export class AuthService {
         }),
       ),
       switchMap(tokens =>
-        this.updateRefreshToken(userId, tokens.refreshToken).pipe(
-          map(() => tokens),
-        ),
+        this.updateRefreshToken(userId, tokens.refreshToken).pipe(map(() => tokens)),
       ),
     );
   }
@@ -135,10 +124,7 @@ export class AuthService {
     );
   }
 
-  private updateRefreshToken(
-    userId: string,
-    refreshToken: string,
-  ): Observable<void> {
+  private updateRefreshToken(userId: string, refreshToken: string): Observable<void> {
     return this.hashValue(refreshToken).pipe(
       switchMap((refreshTokenHash: string) =>
         this.usersService.update(userId, { refreshToken: refreshTokenHash }),

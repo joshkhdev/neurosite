@@ -8,17 +8,16 @@ import {
   Delete,
   ParseUUIDPipe,
   Req,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiNotFoundResponse, ApiOperation } from '@nestjs/swagger';
 import { map, Observable } from 'rxjs';
 import { AuthRequired, Public, Role } from '@shared/decorators';
 import { JwtFastifyRequest } from '@/auth/models/auth.interfaces';
 import { AuthUserEmailDto } from '@/auth/models/auth.dto';
 import { UpdateUserDto, UpdateUserRoleDto } from './models/user.dto';
-import {
-  UserProfileResponseDto,
-  UserResponseDto,
-} from './models/user-response.dto';
+import { UserProfileResponseDto, UserResponseDto } from './models/user-response.dto';
 import { UserRole } from './models/user.interfaces';
 import { UsersService } from './users.service';
 
@@ -43,9 +42,7 @@ export class UsersController {
   public findOne(
     @Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string,
   ): Observable<UserResponseDto> {
-    return this.usersService
-      .findByUuid(uuid)
-      .pipe(map(user => new UserResponseDto(user)));
+    return this.usersService.findByUuid(uuid).pipe(map(user => new UserResponseDto(user)));
   }
 
   @Patch(':uuid/role')
@@ -63,9 +60,7 @@ export class UsersController {
   @Role(UserRole.Admin)
   @ApiOperation({ summary: 'Block user' })
   @ApiNotFoundResponse({ description: 'User not found' })
-  public block(
-    @Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string,
-  ): Observable<void> {
+  public block(@Param('uuid', new ParseUUIDPipe({ version: '4' })) uuid: string): Observable<void> {
     return this.usersService.changeIsBlocked(uuid, true);
   }
 
@@ -82,9 +77,7 @@ export class UsersController {
   @Get('profile')
   @Role(UserRole.User)
   @ApiOperation({ summary: 'Get current user profile' })
-  public getUserProfile(
-    @Req() request: JwtFastifyRequest,
-  ): Observable<UserProfileResponseDto> {
+  public getUserProfile(@Req() request: JwtFastifyRequest): Observable<UserProfileResponseDto> {
     return this.usersService
       .findByUuid(request.user.sub)
       .pipe(map(user => new UserProfileResponseDto(user)));
@@ -92,7 +85,9 @@ export class UsersController {
 
   @Patch('profile')
   @Role(UserRole.User)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Update current user profile' })
+  @ApiNoContentResponse({ description: 'User profile updated' })
   public update(
     @Req() request: JwtFastifyRequest,
     @Body() updateDto: UpdateUserDto,
@@ -114,11 +109,7 @@ export class UsersController {
   @Public()
   @ApiOperation({ summary: 'Get user profile by name' })
   @ApiNotFoundResponse({ description: 'User not found' })
-  public getProfile(
-    @Param('name') name: string,
-  ): Observable<UserProfileResponseDto> {
-    return this.usersService
-      .findByName(name)
-      .pipe(map(user => new UserProfileResponseDto(user)));
+  public getProfile(@Param('name') name: string): Observable<UserProfileResponseDto> {
+    return this.usersService.findByName(name).pipe(map(user => new UserProfileResponseDto(user)));
   }
 }

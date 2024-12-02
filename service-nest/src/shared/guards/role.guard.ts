@@ -6,12 +6,11 @@ import { userHasAccess, UserRole } from '@/users/models/user.interfaces';
 @Injectable()
 export class RoleGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
-  canActivate(context: ExecutionContext): boolean {
-    const role = this.reflector.get<UserRole | undefined>(
-      'role',
-      context.getHandler(),
-    );
+
+  public canActivate(context: ExecutionContext): boolean {
+    const role = this.reflector.get<UserRole | undefined>('role', context.getHandler());
     const request = context.switchToHttp().getRequest<JwtFastifyRequest>();
+
     return userHasAccess(request.user.role, role);
   }
 }

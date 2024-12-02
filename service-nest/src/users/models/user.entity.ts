@@ -1,11 +1,4 @@
-import {
-  Entity,
-  Enum,
-  Index,
-  PrimaryKey,
-  Property,
-  Unique,
-} from '@mikro-orm/core';
+import { Entity, Enum, Index, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { UserRole } from './user.interfaces';
 
 @Entity()

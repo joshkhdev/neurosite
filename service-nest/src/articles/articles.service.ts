@@ -42,10 +42,7 @@ export class ArticlesService {
     return from(this.em.persistAndFlush(article)).pipe(map(() => article));
   }
 
-  public update(
-    id: number,
-    updateArticleDto: UpdateArticleDto,
-  ): Observable<void> {
+  public update(id: number, updateArticleDto: UpdateArticleDto): Observable<void> {
     return this.findOne(id).pipe(
       switchMap(article => {
         wrap(article).assign(updateArticleDto);

@@ -3,13 +3,13 @@ import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class CreateArticleDto {
   @IsString()
   @IsNotEmpty()
-  public title: string;
+  public readonly title: string;
 
   @IsString()
   @IsOptional()
-  public content?: string = '';
+  public readonly content?: string = '';
 
   @IsBoolean()
   @IsOptional()
-  public isPublic?: boolean = false;
+  public readonly isPublic?: boolean = false;
 }
