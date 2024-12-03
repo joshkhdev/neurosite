@@ -1,10 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiButton, TuiHint, TuiIcon, TuiTextfield } from '@taiga-ui/core';
 import { TuiInputModule, TuiTextfieldControllerModule } from '@taiga-ui/legacy';
@@ -13,7 +8,7 @@ import {
   LoginFormGroup,
   PasswordValidationError,
   passwordValidator,
-} from '../../shared/interfaces/login.interfaces';
+} from '@shared/data-access/models';
 
 @Component({
   selector: 'app-login',
@@ -39,14 +34,8 @@ export class LoginComponent {
 
   constructor(private readonly fb: FormBuilder) {
     this.loginFormGroup = this.fb.group<LoginForm>({
-      email: this.fb.nonNullable.control<string>('', [
-        Validators.required,
-        Validators.email,
-      ]),
-      password: this.fb.nonNullable.control<string>('', [
-        Validators.required,
-        passwordValidator,
-      ]),
+      email: this.fb.nonNullable.control<string>('', [Validators.required, Validators.email]),
+      password: this.fb.nonNullable.control<string>('', [Validators.required, passwordValidator]),
     });
   }
 

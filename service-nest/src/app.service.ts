@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AppInfoDto } from './shared/models/app-info.dto';
+import { AppInfoDto } from '@shared/models';
 
 @Injectable()
 export class AppService {
