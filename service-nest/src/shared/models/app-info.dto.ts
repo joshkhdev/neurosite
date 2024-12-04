@@ -1,3 +1,3 @@
 export class AppInfoDto {
-  constructor(public readonly version: string) {}
+  public readonly version: string;
 }
