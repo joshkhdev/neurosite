@@ -35,6 +35,10 @@ module.exports = tseslint.config(
         },
       ],
       'prettier/prettier': 'warn',
+      '@typescript-eslint/ban-tslint-comment': 'off',
+    },
+    linterOptions: {
+      reportUnusedDisableDirectives: 'off',
     },
   },
   {

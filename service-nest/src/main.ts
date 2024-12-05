@@ -15,6 +15,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({ credentials: true, origin: true });
 
+  const operationIdFactory = (controllerKey: string, methodKey: string) =>
+    `${controllerKey.replace('Controller', '')}_${methodKey}`;
+
   const config = new DocumentBuilder()
     .setTitle('Neurosite API')
     .setVersion('1.0')
@@ -25,7 +28,10 @@ async function bootstrap() {
       bearerFormat: 'JWT',
     })
     .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  const documentFactory = () =>
+    SwaggerModule.createDocument(app, config, {
+      operationIdFactory,
+    });
   SwaggerModule.setup('swagger', app, documentFactory, {
     useGlobalPrefix: true,
   });
