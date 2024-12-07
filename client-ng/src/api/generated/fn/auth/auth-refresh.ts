@@ -5,16 +5,16 @@
 import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import { ApiStrictHttpResponse } from '../../api-strict-http-response';
+import { ApiRequestBuilder } from '../../api-request-builder';
 
 import { AuthSessionDto } from '../../models/auth-session-dto';
 
 export interface AuthRefresh$Params {
 }
 
-export function authRefresh(http: HttpClient, rootUrl: string, params?: AuthRefresh$Params, context?: HttpContext): Observable<StrictHttpResponse<AuthSessionDto>> {
-  const rb = new RequestBuilder(rootUrl, authRefresh.PATH, 'get');
+export function authRefresh(http: HttpClient, rootUrl: string, params?: AuthRefresh$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<AuthSessionDto>> {
+  const rb = new ApiRequestBuilder(rootUrl, authRefresh.PATH, 'get');
   if (params) {
   }
 
@@ -23,7 +23,7 @@ export function authRefresh(http: HttpClient, rootUrl: string, params?: AuthRefr
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<AuthSessionDto>;
+      return r as ApiStrictHttpResponse<AuthSessionDto>;
     })
   );
 }

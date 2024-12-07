@@ -1,3 +1,5 @@
+@import "variables";
+
 .header {
   padding: 8px;
 
@@ -44,7 +46,7 @@
 
         &:hover,
         &:active {
-          background-color: var(--color-aqua);
+          background-color: $color-aqua;
           transition: all 0.4s ease-out;
         }
       }

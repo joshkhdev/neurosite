@@ -7,9 +7,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BaseService } from '../base-service';
+import { ApiBaseService } from '../api-base-service';
 import { ApiConfiguration } from '../api-configuration';
-import { StrictHttpResponse } from '../strict-http-response';
+import { ApiStrictHttpResponse } from '../api-strict-http-response';
 
 import { UserProfileResponseDto } from '../models/user-profile-response-dto';
 import { UserResponseDto } from '../models/user-response-dto';
@@ -33,7 +33,7 @@ import { usersUpdateRole } from '../fn/users/users-update-role';
 import { UsersUpdateRole$Params } from '../fn/users/users-update-role';
 
 @Injectable({ providedIn: 'root' })
-export class UsersService extends BaseService {
+export class UsersApiService extends ApiBaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
@@ -51,7 +51,7 @@ export class UsersService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  usersFindAll$Response(params?: UsersFindAll$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<UserResponseDto>>> {
+  usersFindAll$Response(params?: UsersFindAll$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<Array<UserResponseDto>>> {
     return usersFindAll(this.http, this.rootUrl, params, context);
   }
 
@@ -67,7 +67,7 @@ export class UsersService extends BaseService {
    */
   usersFindAll(params?: UsersFindAll$Params, context?: HttpContext): Observable<Array<UserResponseDto>> {
     return this.usersFindAll$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<UserResponseDto>>): Array<UserResponseDto> => r.body)
+      map((r: ApiStrictHttpResponse<Array<UserResponseDto>>): Array<UserResponseDto> => r.body)
     );
   }
 
@@ -84,7 +84,7 @@ export class UsersService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  usersFindOne$Response(params: UsersFindOne$Params, context?: HttpContext): Observable<StrictHttpResponse<UserResponseDto>> {
+  usersFindOne$Response(params: UsersFindOne$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<UserResponseDto>> {
     return usersFindOne(this.http, this.rootUrl, params, context);
   }
 
@@ -100,7 +100,7 @@ export class UsersService extends BaseService {
    */
   usersFindOne(params: UsersFindOne$Params, context?: HttpContext): Observable<UserResponseDto> {
     return this.usersFindOne$Response(params, context).pipe(
-      map((r: StrictHttpResponse<UserResponseDto>): UserResponseDto => r.body)
+      map((r: ApiStrictHttpResponse<UserResponseDto>): UserResponseDto => r.body)
     );
   }
 
@@ -117,7 +117,7 @@ export class UsersService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  usersBlock$Response(params: UsersBlock$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  usersBlock$Response(params: UsersBlock$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
     return usersBlock(this.http, this.rootUrl, params, context);
   }
 
@@ -133,7 +133,7 @@ export class UsersService extends BaseService {
    */
   usersBlock(params: UsersBlock$Params, context?: HttpContext): Observable<void> {
     return this.usersBlock$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: ApiStrictHttpResponse<void>): void => r.body)
     );
   }
 
@@ -150,7 +150,7 @@ export class UsersService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  usersUpdateRole$Response(params: UsersUpdateRole$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  usersUpdateRole$Response(params: UsersUpdateRole$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
     return usersUpdateRole(this.http, this.rootUrl, params, context);
   }
 
@@ -166,7 +166,7 @@ export class UsersService extends BaseService {
    */
   usersUpdateRole(params: UsersUpdateRole$Params, context?: HttpContext): Observable<void> {
     return this.usersUpdateRole$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: ApiStrictHttpResponse<void>): void => r.body)
     );
   }
 
@@ -183,7 +183,7 @@ export class UsersService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  usersUnblock$Response(params: UsersUnblock$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  usersUnblock$Response(params: UsersUnblock$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
     return usersUnblock(this.http, this.rootUrl, params, context);
   }
 
@@ -199,7 +199,7 @@ export class UsersService extends BaseService {
    */
   usersUnblock(params: UsersUnblock$Params, context?: HttpContext): Observable<void> {
     return this.usersUnblock$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: ApiStrictHttpResponse<void>): void => r.body)
     );
   }
 
@@ -216,7 +216,7 @@ export class UsersService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  usersGetUserProfile$Response(params?: UsersGetUserProfile$Params, context?: HttpContext): Observable<StrictHttpResponse<UserProfileResponseDto>> {
+  usersGetUserProfile$Response(params?: UsersGetUserProfile$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<UserProfileResponseDto>> {
     return usersGetUserProfile(this.http, this.rootUrl, params, context);
   }
 
@@ -232,7 +232,7 @@ export class UsersService extends BaseService {
    */
   usersGetUserProfile(params?: UsersGetUserProfile$Params, context?: HttpContext): Observable<UserProfileResponseDto> {
     return this.usersGetUserProfile$Response(params, context).pipe(
-      map((r: StrictHttpResponse<UserProfileResponseDto>): UserProfileResponseDto => r.body)
+      map((r: ApiStrictHttpResponse<UserProfileResponseDto>): UserProfileResponseDto => r.body)
     );
   }
 
@@ -249,7 +249,7 @@ export class UsersService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  usersUpdate$Response(params: UsersUpdate$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  usersUpdate$Response(params: UsersUpdate$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
     return usersUpdate(this.http, this.rootUrl, params, context);
   }
 
@@ -265,7 +265,7 @@ export class UsersService extends BaseService {
    */
   usersUpdate(params: UsersUpdate$Params, context?: HttpContext): Observable<void> {
     return this.usersUpdate$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: ApiStrictHttpResponse<void>): void => r.body)
     );
   }
 
@@ -282,7 +282,7 @@ export class UsersService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  usersUpdateEmail$Response(params: UsersUpdateEmail$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  usersUpdateEmail$Response(params: UsersUpdateEmail$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
     return usersUpdateEmail(this.http, this.rootUrl, params, context);
   }
 
@@ -298,7 +298,7 @@ export class UsersService extends BaseService {
    */
   usersUpdateEmail(params: UsersUpdateEmail$Params, context?: HttpContext): Observable<void> {
     return this.usersUpdateEmail$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: ApiStrictHttpResponse<void>): void => r.body)
     );
   }
 
@@ -315,7 +315,7 @@ export class UsersService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  usersGetProfile$Response(params: UsersGetProfile$Params, context?: HttpContext): Observable<StrictHttpResponse<UserProfileResponseDto>> {
+  usersGetProfile$Response(params: UsersGetProfile$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<UserProfileResponseDto>> {
     return usersGetProfile(this.http, this.rootUrl, params, context);
   }
 
@@ -331,7 +331,7 @@ export class UsersService extends BaseService {
    */
   usersGetProfile(params: UsersGetProfile$Params, context?: HttpContext): Observable<UserProfileResponseDto> {
     return this.usersGetProfile$Response(params, context).pipe(
-      map((r: StrictHttpResponse<UserProfileResponseDto>): UserProfileResponseDto => r.body)
+      map((r: ApiStrictHttpResponse<UserProfileResponseDto>): UserProfileResponseDto => r.body)
     );
   }
 

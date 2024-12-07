@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { TuiHeader } from '@taiga-ui/layout';
 
 @Component({
-  selector: 'app-main',
+  selector: 'ns-main',
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
   standalone: true,
-  imports: [TuiHeader],
+  imports: [],
 })
 export class MainComponent {}

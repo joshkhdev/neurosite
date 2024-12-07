@@ -5,15 +5,15 @@
 import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import { ApiStrictHttpResponse } from '../../api-strict-http-response';
+import { ApiRequestBuilder } from '../../api-request-builder';
 
 
 export interface AuthLogout$Params {
 }
 
-export function authLogout(http: HttpClient, rootUrl: string, params?: AuthLogout$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, authLogout.PATH, 'get');
+export function authLogout(http: HttpClient, rootUrl: string, params?: AuthLogout$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
+  const rb = new ApiRequestBuilder(rootUrl, authLogout.PATH, 'get');
   if (params) {
   }
 
@@ -22,7 +22,7 @@ export function authLogout(http: HttpClient, rootUrl: string, params?: AuthLogou
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return (r as HttpResponse<any>).clone({ body: undefined }) as ApiStrictHttpResponse<void>;
     })
   );
 }

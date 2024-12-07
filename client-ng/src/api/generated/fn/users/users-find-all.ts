@@ -5,16 +5,16 @@
 import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import { ApiStrictHttpResponse } from '../../api-strict-http-response';
+import { ApiRequestBuilder } from '../../api-request-builder';
 
 import { UserResponseDto } from '../../models/user-response-dto';
 
 export interface UsersFindAll$Params {
 }
 
-export function usersFindAll(http: HttpClient, rootUrl: string, params?: UsersFindAll$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<UserResponseDto>>> {
-  const rb = new RequestBuilder(rootUrl, usersFindAll.PATH, 'get');
+export function usersFindAll(http: HttpClient, rootUrl: string, params?: UsersFindAll$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<Array<UserResponseDto>>> {
+  const rb = new ApiRequestBuilder(rootUrl, usersFindAll.PATH, 'get');
   if (params) {
   }
 
@@ -23,7 +23,7 @@ export function usersFindAll(http: HttpClient, rootUrl: string, params?: UsersFi
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<Array<UserResponseDto>>;
+      return r as ApiStrictHttpResponse<Array<UserResponseDto>>;
     })
   );
 }
