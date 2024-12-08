@@ -5,8 +5,8 @@
 import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import { ApiStrictHttpResponse } from '../../api-strict-http-response';
+import { ApiRequestBuilder } from '../../api-request-builder';
 
 import { ArticleDto } from '../../models/article-dto';
 
@@ -14,8 +14,8 @@ export interface ArticlesFindOne$Params {
   id: string;
 }
 
-export function articlesFindOne(http: HttpClient, rootUrl: string, params: ArticlesFindOne$Params, context?: HttpContext): Observable<StrictHttpResponse<ArticleDto>> {
-  const rb = new RequestBuilder(rootUrl, articlesFindOne.PATH, 'get');
+export function articlesFindOne(http: HttpClient, rootUrl: string, params: ArticlesFindOne$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<ArticleDto>> {
+  const rb = new ApiRequestBuilder(rootUrl, articlesFindOne.PATH, 'get');
   if (params) {
     rb.path('id', params.id, {});
   }
@@ -25,7 +25,7 @@ export function articlesFindOne(http: HttpClient, rootUrl: string, params: Artic
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<ArticleDto>;
+      return r as ApiStrictHttpResponse<ArticleDto>;
     })
   );
 }

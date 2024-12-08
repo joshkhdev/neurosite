@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-psy',
+  selector: 'ns-psy',
   standalone: true,
   imports: [],
   templateUrl: './psy.component.html',

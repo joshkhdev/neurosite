@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
+  selector: 'ns-header',
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   standalone: true,

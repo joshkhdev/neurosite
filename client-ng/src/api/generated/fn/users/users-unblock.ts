@@ -5,16 +5,16 @@
 import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import { ApiStrictHttpResponse } from '../../api-strict-http-response';
+import { ApiRequestBuilder } from '../../api-request-builder';
 
 
 export interface UsersUnblock$Params {
   uuid: string;
 }
 
-export function usersUnblock(http: HttpClient, rootUrl: string, params: UsersUnblock$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, usersUnblock.PATH, 'post');
+export function usersUnblock(http: HttpClient, rootUrl: string, params: UsersUnblock$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
+  const rb = new ApiRequestBuilder(rootUrl, usersUnblock.PATH, 'post');
   if (params) {
     rb.path('uuid', params.uuid, {});
   }
@@ -24,7 +24,7 @@ export function usersUnblock(http: HttpClient, rootUrl: string, params: UsersUnb
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return (r as HttpResponse<any>).clone({ body: undefined }) as ApiStrictHttpResponse<void>;
     })
   );
 }

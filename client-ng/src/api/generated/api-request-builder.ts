@@ -209,7 +209,7 @@ class HeaderParameter extends Parameter {
 /**
  * Helper to build http requests from parameters
  */
-export class RequestBuilder {
+export class ApiRequestBuilder {
 
   private _path = new Map<string, PathParameter>();
   private _query = new Map<string, QueryParameter>();

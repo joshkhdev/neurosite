@@ -1,0 +1,8 @@
+{{> header }}
+
+{{#imports}}import { {{{typeName}}}{{#useAlias}} as {{{qualifiedName}}}{{/useAlias}} } from '{{{@root.pathToRoot}}}{{{fullPath}}}';
+{{/imports}}
+{{{tsComments}}}{{#isObject}}{{>object}}{{/isObject
+}}{{#isEnum}}{{>enum}}{{/isEnum
+}}{{#isSimple}}{{>simple}}{{/isSimple
+}}

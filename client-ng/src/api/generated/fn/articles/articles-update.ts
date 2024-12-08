@@ -5,8 +5,8 @@
 import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { StrictHttpResponse } from '../../strict-http-response';
-import { RequestBuilder } from '../../request-builder';
+import { ApiStrictHttpResponse } from '../../api-strict-http-response';
+import { ApiRequestBuilder } from '../../api-request-builder';
 
 import { UpdateArticleDto } from '../../models/update-article-dto';
 
@@ -15,8 +15,8 @@ export interface ArticlesUpdate$Params {
       body: UpdateArticleDto
 }
 
-export function articlesUpdate(http: HttpClient, rootUrl: string, params: ArticlesUpdate$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, articlesUpdate.PATH, 'patch');
+export function articlesUpdate(http: HttpClient, rootUrl: string, params: ArticlesUpdate$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
+  const rb = new ApiRequestBuilder(rootUrl, articlesUpdate.PATH, 'patch');
   if (params) {
     rb.path('id', params.id, {});
     rb.body(params.body, 'application/json');
@@ -27,7 +27,7 @@ export function articlesUpdate(http: HttpClient, rootUrl: string, params: Articl
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return (r as HttpResponse<any>).clone({ body: undefined }) as ApiStrictHttpResponse<void>;
     })
   );
 }

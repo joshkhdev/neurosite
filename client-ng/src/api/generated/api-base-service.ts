@@ -10,7 +10,7 @@ import { ApiConfiguration } from './api-configuration';
  * Base class for services
  */
 @Injectable()
-export class BaseService {
+export class ApiBaseService {
   constructor(
     protected config: ApiConfiguration,
     protected http: HttpClient

@@ -7,9 +7,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BaseService } from '../base-service';
+import { ApiBaseService } from '../api-base-service';
 import { ApiConfiguration } from '../api-configuration';
-import { StrictHttpResponse } from '../strict-http-response';
+import { ApiStrictHttpResponse } from '../api-strict-http-response';
 
 import { ArticleDto } from '../models/article-dto';
 import { articlesCreate } from '../fn/articles/articles-create';
@@ -26,7 +26,7 @@ import { articlesUpdate } from '../fn/articles/articles-update';
 import { ArticlesUpdate$Params } from '../fn/articles/articles-update';
 
 @Injectable({ providedIn: 'root' })
-export class ArticlesService extends BaseService {
+export class ArticlesApiService extends ApiBaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
@@ -44,7 +44,7 @@ export class ArticlesService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  articlesFindAll$Response(params?: ArticlesFindAll$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<ArticleDto>>> {
+  articlesFindAll$Response(params?: ArticlesFindAll$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<Array<ArticleDto>>> {
     return articlesFindAll(this.http, this.rootUrl, params, context);
   }
 
@@ -60,7 +60,7 @@ export class ArticlesService extends BaseService {
    */
   articlesFindAll(params?: ArticlesFindAll$Params, context?: HttpContext): Observable<Array<ArticleDto>> {
     return this.articlesFindAll$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<ArticleDto>>): Array<ArticleDto> => r.body)
+      map((r: ApiStrictHttpResponse<Array<ArticleDto>>): Array<ArticleDto> => r.body)
     );
   }
 
@@ -77,7 +77,7 @@ export class ArticlesService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  articlesCreate$Response(params: ArticlesCreate$Params, context?: HttpContext): Observable<StrictHttpResponse<ArticleDto>> {
+  articlesCreate$Response(params: ArticlesCreate$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<ArticleDto>> {
     return articlesCreate(this.http, this.rootUrl, params, context);
   }
 
@@ -93,7 +93,7 @@ export class ArticlesService extends BaseService {
    */
   articlesCreate(params: ArticlesCreate$Params, context?: HttpContext): Observable<ArticleDto> {
     return this.articlesCreate$Response(params, context).pipe(
-      map((r: StrictHttpResponse<ArticleDto>): ArticleDto => r.body)
+      map((r: ApiStrictHttpResponse<ArticleDto>): ArticleDto => r.body)
     );
   }
 
@@ -110,7 +110,7 @@ export class ArticlesService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  articlesFindAllPublic$Response(params?: ArticlesFindAllPublic$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<ArticleDto>>> {
+  articlesFindAllPublic$Response(params?: ArticlesFindAllPublic$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<Array<ArticleDto>>> {
     return articlesFindAllPublic(this.http, this.rootUrl, params, context);
   }
 
@@ -126,7 +126,7 @@ export class ArticlesService extends BaseService {
    */
   articlesFindAllPublic(params?: ArticlesFindAllPublic$Params, context?: HttpContext): Observable<Array<ArticleDto>> {
     return this.articlesFindAllPublic$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<ArticleDto>>): Array<ArticleDto> => r.body)
+      map((r: ApiStrictHttpResponse<Array<ArticleDto>>): Array<ArticleDto> => r.body)
     );
   }
 
@@ -143,7 +143,7 @@ export class ArticlesService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  articlesFindOne$Response(params: ArticlesFindOne$Params, context?: HttpContext): Observable<StrictHttpResponse<ArticleDto>> {
+  articlesFindOne$Response(params: ArticlesFindOne$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<ArticleDto>> {
     return articlesFindOne(this.http, this.rootUrl, params, context);
   }
 
@@ -159,7 +159,7 @@ export class ArticlesService extends BaseService {
    */
   articlesFindOne(params: ArticlesFindOne$Params, context?: HttpContext): Observable<ArticleDto> {
     return this.articlesFindOne$Response(params, context).pipe(
-      map((r: StrictHttpResponse<ArticleDto>): ArticleDto => r.body)
+      map((r: ApiStrictHttpResponse<ArticleDto>): ArticleDto => r.body)
     );
   }
 
@@ -176,7 +176,7 @@ export class ArticlesService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  articlesRemove$Response(params: ArticlesRemove$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  articlesRemove$Response(params: ArticlesRemove$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
     return articlesRemove(this.http, this.rootUrl, params, context);
   }
 
@@ -192,7 +192,7 @@ export class ArticlesService extends BaseService {
    */
   articlesRemove(params: ArticlesRemove$Params, context?: HttpContext): Observable<void> {
     return this.articlesRemove$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: ApiStrictHttpResponse<void>): void => r.body)
     );
   }
 
@@ -209,7 +209,7 @@ export class ArticlesService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  articlesUpdate$Response(params: ArticlesUpdate$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  articlesUpdate$Response(params: ArticlesUpdate$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
     return articlesUpdate(this.http, this.rootUrl, params, context);
   }
 
@@ -225,7 +225,7 @@ export class ArticlesService extends BaseService {
    */
   articlesUpdate(params: ArticlesUpdate$Params, context?: HttpContext): Observable<void> {
     return this.articlesUpdate$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: ApiStrictHttpResponse<void>): void => r.body)
     );
   }
 

@@ -7,9 +7,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BaseService } from '../base-service';
+import { ApiBaseService } from '../api-base-service';
 import { ApiConfiguration } from '../api-configuration';
-import { StrictHttpResponse } from '../strict-http-response';
+import { ApiStrictHttpResponse } from '../api-strict-http-response';
 
 import { authLogout } from '../fn/auth/auth-logout';
 import { AuthLogout$Params } from '../fn/auth/auth-logout';
@@ -22,7 +22,7 @@ import { authSignUp } from '../fn/auth/auth-sign-up';
 import { AuthSignUp$Params } from '../fn/auth/auth-sign-up';
 
 @Injectable({ providedIn: 'root' })
-export class AuthService extends BaseService {
+export class AuthApiService extends ApiBaseService {
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);
   }
@@ -40,7 +40,7 @@ export class AuthService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  authSignUp$Response(params: AuthSignUp$Params, context?: HttpContext): Observable<StrictHttpResponse<AuthSessionDto>> {
+  authSignUp$Response(params: AuthSignUp$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<AuthSessionDto>> {
     return authSignUp(this.http, this.rootUrl, params, context);
   }
 
@@ -56,7 +56,7 @@ export class AuthService extends BaseService {
    */
   authSignUp(params: AuthSignUp$Params, context?: HttpContext): Observable<AuthSessionDto> {
     return this.authSignUp$Response(params, context).pipe(
-      map((r: StrictHttpResponse<AuthSessionDto>): AuthSessionDto => r.body)
+      map((r: ApiStrictHttpResponse<AuthSessionDto>): AuthSessionDto => r.body)
     );
   }
 
@@ -73,7 +73,7 @@ export class AuthService extends BaseService {
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  authSignIn$Response(params: AuthSignIn$Params, context?: HttpContext): Observable<StrictHttpResponse<AuthSessionDto>> {
+  authSignIn$Response(params: AuthSignIn$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<AuthSessionDto>> {
     return authSignIn(this.http, this.rootUrl, params, context);
   }
 
@@ -89,7 +89,7 @@ export class AuthService extends BaseService {
    */
   authSignIn(params: AuthSignIn$Params, context?: HttpContext): Observable<AuthSessionDto> {
     return this.authSignIn$Response(params, context).pipe(
-      map((r: StrictHttpResponse<AuthSessionDto>): AuthSessionDto => r.body)
+      map((r: ApiStrictHttpResponse<AuthSessionDto>): AuthSessionDto => r.body)
     );
   }
 
@@ -106,7 +106,7 @@ export class AuthService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  authLogout$Response(params?: AuthLogout$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  authLogout$Response(params?: AuthLogout$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<void>> {
     return authLogout(this.http, this.rootUrl, params, context);
   }
 
@@ -122,7 +122,7 @@ export class AuthService extends BaseService {
    */
   authLogout(params?: AuthLogout$Params, context?: HttpContext): Observable<void> {
     return this.authLogout$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+      map((r: ApiStrictHttpResponse<void>): void => r.body)
     );
   }
 
@@ -139,7 +139,7 @@ export class AuthService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  authRefresh$Response(params?: AuthRefresh$Params, context?: HttpContext): Observable<StrictHttpResponse<AuthSessionDto>> {
+  authRefresh$Response(params?: AuthRefresh$Params, context?: HttpContext): Observable<ApiStrictHttpResponse<AuthSessionDto>> {
     return authRefresh(this.http, this.rootUrl, params, context);
   }
 
@@ -155,7 +155,7 @@ export class AuthService extends BaseService {
    */
   authRefresh(params?: AuthRefresh$Params, context?: HttpContext): Observable<AuthSessionDto> {
     return this.authRefresh$Response(params, context).pipe(
-      map((r: StrictHttpResponse<AuthSessionDto>): AuthSessionDto => r.body)
+      map((r: ApiStrictHttpResponse<AuthSessionDto>): AuthSessionDto => r.body)
     );
   }
 

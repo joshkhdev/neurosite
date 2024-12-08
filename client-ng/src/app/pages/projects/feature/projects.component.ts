@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-projects',
+  selector: 'ns-projects',
   standalone: true,
   imports: [],
   templateUrl: './projects.component.html',

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-shop',
+  selector: 'ns-shop',
   standalone: true,
   imports: [],
   templateUrl: './shop.component.html',
