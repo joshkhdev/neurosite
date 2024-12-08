@@ -1,6 +1,6 @@
 import { NsAppearance, NsColor, NsIcon, NsSize } from '../../common/types';
 
-export interface SlButtonOptions {
+export interface NsButtonOptions {
   size: NsSize | undefined;
   color: NsColor | undefined;
   appearance: NsAppearance;
@@ -8,7 +8,7 @@ export interface SlButtonOptions {
   loading: boolean | undefined;
 }
 
-export const SlButtonDefaultOptions: SlButtonOptions = {
+export const NsButtonDefaultOptions: NsButtonOptions = {
   size: undefined,
   color: 'primary',
   appearance: 'normal',
