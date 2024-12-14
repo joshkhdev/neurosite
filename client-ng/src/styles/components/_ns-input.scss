@@ -1,0 +1,7 @@
+@import "variables";
+
+.ns-input {
+  all: unset;
+
+  @include components-font;
+}

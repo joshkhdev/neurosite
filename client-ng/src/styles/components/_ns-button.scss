@@ -1,0 +1,59 @@
+@use "sass:map";
+@import "variables";
+
+$button-params: (
+  sm: (
+    height: 24px,
+    radius: 4px,
+  ),
+  md: (
+    height: 32px,
+    radius: 6px,
+  ),
+  lg: (
+    height: 40px,
+    radius: 8px,
+  ),
+);
+
+@mixin button-size($size, $params) {
+  &[data-size=#{$size}] {
+    height: map-get($params, "height");
+    border-radius: map-get($params, "radius");
+  }
+}
+
+@mixin button-color($color, $value) {
+  &[data-color=#{$color}] {
+    background-color: $value;
+
+    &:hover:not([disabled]),
+    &:active:not([disabled]) {
+      background-color: rgba($value, 0.9);
+    }
+  }
+}
+
+.ns-btn {
+  all: unset;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @include components-font;;
+  cursor: pointer;
+
+  box-shadow: 0 2px 4px $color-shadow;
+
+  color: $color-black-font;
+
+  @each $name, $color in $global-colors {
+    @include button-color($name, $color);
+  }
+
+  @each $size in $global-sizes {
+    @include button-size($size, map.get($button-params, $size));
+  }
+}

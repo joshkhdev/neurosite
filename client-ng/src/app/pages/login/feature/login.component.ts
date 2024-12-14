@@ -11,14 +11,15 @@ import {
 } from '@shared/data-access/models';
 import { AuthService } from '@shared/data-access/services';
 import { StorageHelper } from '@shared/utils';
+import { LibraryModule } from '@shared/lib/library.module';
 
 @Component({
   selector: 'ns-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [LibraryModule, ReactiveFormsModule],
 })
 export class LoginComponent {
   protected readonly loginFormGroup: LoginFormGroup;

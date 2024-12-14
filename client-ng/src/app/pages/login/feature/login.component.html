@@ -1,8 +1,8 @@
 <div class="login">
   <div class="login__header">
-    <div>
-      Вход для администраторов
-    </div>
+    <p class="title-1">
+      Войти в учётную запись
+    </p>
   </div>
 
   <div class="login__content">
@@ -10,6 +10,7 @@
       <div class="email-control">
         Введите почту
         <input
+          nsInput
           formControlName="email"
           type="email"
           placeholder="user@example.com"
@@ -17,19 +18,17 @@
         />
       </div>
 
-      <div
-
-        class="password-control"
-      >
+      <div class="password-control">
         Введите пароль
         <input
+          nsInput
           formControlName="password"
           type="password"
           autocomplete="current-password"
         />
     </div>
 
-      <button (click)="login()">
+      <button nsButton (click)="login()">
         Войти
       </button>
     </form>

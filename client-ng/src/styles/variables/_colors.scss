@@ -4,4 +4,15 @@ $color-lemon: #ffffb5;
 $color-peach: #ffccb6;
 $color-lipstick: #f3b0c3;
 
-$color-border: rgba(black, 0.12);
+$color-border: rgba(black, 0.1);
+$color-shadow: rgba(black, 0.2);
+
+$color-black-font: rgba(black, 0.9);
+$color-white-font: rgba(white, 0.9);
+
+$global-colors: (
+  primary: #a0c4ff,
+  secondary: #bdb2ff,
+  accent: #ffd6a5,
+  warn: #ffadad,
+);

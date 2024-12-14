@@ -1,7 +1,7 @@
-import { NsAppearance, NsColor, NsIcon, NsSize } from '../../common/types';
+import { NsAppearance, NsColor, NsIcon, NsSize } from '../../../ui/common/types';
 
 export interface NsButtonOptions {
-  size: NsSize | undefined;
+  size: NsSize;
   color: NsColor | undefined;
   appearance: NsAppearance;
   icon: NsIcon | undefined;
@@ -9,7 +9,7 @@ export interface NsButtonOptions {
 }
 
 export const NsButtonDefaultOptions: NsButtonOptions = {
-  size: undefined,
+  size: 'md',
   color: 'primary',
   appearance: 'normal',
   icon: undefined,
