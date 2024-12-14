@@ -4,28 +4,28 @@ import { UserRole } from './user.interfaces';
 @Entity()
 export class User {
   @PrimaryKey({ type: 'uuid' })
-  id: string;
+  public id: string;
 
   @Index()
   @Property()
-  email: string;
+  public email: string;
 
   @Property()
-  password: string;
+  public password: string;
 
   @Unique()
   @Property()
-  name: string;
+  public name: string;
 
   @Property()
-  displayName: string;
+  public displayName: string;
 
   @Enum({ items: () => UserRole, default: UserRole.User })
-  role: UserRole;
+  public role: UserRole;
 
   @Property({ type: 'boolean', default: false })
-  isBlocked: boolean = false;
+  public isBlocked: boolean = false;
 
   @Property({ type: 'text', nullable: true })
-  refreshToken?: string;
+  public refreshToken?: string;
 }

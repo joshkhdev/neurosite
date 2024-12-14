@@ -8,6 +8,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ArticlesModule } from './articles/articles.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+// import { ImagesModule } from './images/images.module';
 import mikroOrmConfig from 'mikro-orm.config';
 
 @Module({
@@ -32,6 +33,7 @@ import mikroOrmConfig from 'mikro-orm.config';
     ArticlesModule,
     AuthModule,
     UsersModule,
+    // ImagesModule,
   ],
 })
 export class AppModule {}
