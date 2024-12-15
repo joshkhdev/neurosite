@@ -1,16 +1,19 @@
 {
   "name": "neurosite",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "author": "Josh Khrustalev",
+  "license": "Apache-2.0",
+  "private": true,
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "prod": "bunx http-server ./build/browser",
     "test": "ng test",
     "lint": "ng lint",
     "codegen": "ng-openapi-gen --config ./src/api/service-api-gen.json"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^18.2.0",
     "@angular/cdk": "^18.0.0",

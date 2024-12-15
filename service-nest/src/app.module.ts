@@ -17,7 +17,7 @@ import mikroOrmConfig from 'mikro-orm.config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', './.env'],
+      envFilePath: ['../.env'],
     }),
     MikroOrmModule.forRootAsync({
       imports: [ConfigModule],
